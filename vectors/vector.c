@@ -58,7 +58,6 @@ bool vector_has_space(vector_t *vec) {
 vector_t *vector_realloc(vector_t *vec) {
     vector_t *new_vec = realloc(vec, sizeof(vector_t) + vec->length + vec->type_size);
     if(new_vec == NULL) {
-	vector_free(&vec->data);
 	return NULL;
     }
     new_vec->length += new_vec->type_size;
@@ -66,7 +65,10 @@ vector_t *vector_realloc(vector_t *vec) {
     return new_vec;
 }
 
+
 //Add value onto the end of the vector
+//returns the address of where to write the value 
+//this is done to avoid the value having to be passed as a pointer
 vec_data *_i_vector_add(void **vec_data) {
     vector_t *vec = vector_get_struct(*vec_data);
 
@@ -84,6 +86,7 @@ vec_data *_i_vector_add(void **vec_data) {
     return (void *)(((uint64_t)*vec_data) + (vec->type_size * vec->size++));
 }
 
+//vector remove is a function that takes in a vector postion and a vector then remove that postion in the vector
 vector_status _i_vector_remove(void **vec_data, uint64_t pos) {
     vector_t *vec = vector_get_struct(*vec_data); //get the vector struct 
 
@@ -91,7 +94,14 @@ vector_status _i_vector_remove(void **vec_data, uint64_t pos) {
         return VEC_OOB_ERR; //return error to the user 
     }
     
+    //Move entries and reduce vector size to "remove an entry" shift entries above
+    //pos along take up that place 
+    memmove((void*)(((uint64_t)*vec_data) + (pos * vec->type_size)),
+	    (void*)(((uint64_t)*vec_data) + ((pos + 1) * vec->type_size)),
+	    (vec->size - pos - 1) * vec->type_size);
     
+    //currently we don't free the memory yet opting to keep it so that if vector add is called reallocation is unneeded 
+    vec->size--;
 
     return VEC_SUCCESS;
 }
@@ -106,7 +116,15 @@ int main(int argc, char **argv) {
     vector_add(uint32_t, data, 800);
     if(data == NULL) {
 	printf("Allocation Error\n");
+	return 1;
+    } 
+    vector_add(uint32_t, data, 909);
+    if(data == NULL) {
+	printf("Allocation Error\n");
+	return 1;
     }
+    vector_remove(data, 1);
+    vector_add(uint32_t, data, 2000);
     if(data != NULL) {
 	vector_free(data);
     }

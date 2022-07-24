@@ -32,6 +32,7 @@ vector_t *vector_realloc(vector_t *vec);
 vec_data *_i_vector_add(void **vec_data);
 vector_status _i_vector_remove(void **vec_data, uint64_t pos);
 
+//Make this less complex somehow/get the return value back into the hands of the user
 #define vector_add(type, vec, value) {\
     type *v = _i_vector_add((void**)&vec);\
     if(v != NULL) {\
@@ -39,6 +40,8 @@ vector_status _i_vector_remove(void **vec_data, uint64_t pos);
 	v[0] = value; \
     } \
 }
-#define vector_create(type) ((type *) _i_vector_create(sizeof(type)));
 
+#define vector_create(type) ((type *) _i_vector_create(sizeof(type)))
+
+#define vector_remove(vec, pos) _i_vector_remove((void**)&vec, pos)
 
