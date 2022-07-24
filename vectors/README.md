@@ -3,7 +3,6 @@
 A basic implementation of vectors in C
 
 # Problems currently:
-- Vectors can't remove entries 
 - Vector add error checking is a little messy
 - Users adding the wrong type to a vector could cause issues
 
