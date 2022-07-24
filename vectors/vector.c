@@ -13,14 +13,16 @@
  */
 
 vec_data *_i_vector_create(size_t size) {
-    printf("%lu\n", size);
     
     //Allocate vector data structure + sizeof data type in the vector 
     struct vector *vec = calloc(1, sizeof(struct vector) + size);
+    if(vec == NULL) {
+	return NULL;
+    }
+
     vec->type_size = size;
     vec->length = size; //vec->data has 1 entry free to use  
     vec->size = 0; //vec->data has no entries yet
-    printf("VECTOR ALLOCATED: %p\n", vec);
     return &vec->data; //return vec->data 
 }
 
@@ -31,10 +33,6 @@ vector_t *vector_get_struct(void *vec_data) {
 
 void vector_free(void *vec_data) {
     struct vector *vec = vector_get_struct(vec_data);
-    printf("size %lu, length %lu\nptr %p\n", vec->size, vec->length, vec);
-    for(int i = 0; i < vec->size; i++) {
-        printf("Data: %d\n", ((uint32_t *)&vec->data)[i]);
-    }
     free(vec);
 }
 
@@ -79,8 +77,6 @@ vec_data *_i_vector_add(void **vec_data) {
 	    return NULL;
 	}
         *vec_data = &vec->data;
-    } else { 
-        printf("Has space\n");
     }
 
     return (void *)(((uint64_t)*vec_data) + (vec->type_size * vec->size++));
@@ -107,27 +103,3 @@ vector_status _i_vector_remove(void **vec_data, uint64_t pos, uint64_t length) {
 }
 
 
-
-int main(int argc, char **argv) {
-    uint32_t *data = vector_create(uint32_t);
-    uint32_t num = 240; 
-    int num2; 
-    vector_add(uint32_t, data, num);
-    vector_add(uint32_t, data, 800);
-    if(data == NULL) {
-	printf("Allocation Error\n");
-	return 1;
-    } 
-    vector_add(uint32_t, data, 909);
-    if(data == NULL) {
-	printf("Allocation Error\n");
-	return 1;
-    }
-    vector_remove(data, 0);
-    vector_add(uint32_t, data, 2000);
-    vector_remove_multi(data, 0, 3);
-    if(data != NULL) {
-	vector_free(data);
-    }
-    return 0;
-}

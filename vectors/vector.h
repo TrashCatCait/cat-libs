@@ -36,12 +36,10 @@ vector_status _i_vector_remove(void **vec_data, uint64_t pos, uint64_t length);
 #define vector_add(type, vec, value) {\
     type *v = _i_vector_add((void**)&vec);\
     if(v != NULL) {\
-	printf("%p\n", v);\
 	v[0] = value; \
     } \
 }
 
 #define vector_create(type) ((type *) _i_vector_create(sizeof(type)))
-
 #define vector_remove(vec, pos) _i_vector_remove((void**)&vec, pos, 1)
 #define vector_remove_multi(vec, pos, len) _i_vector_remove((void**)&vec, pos, len) 
