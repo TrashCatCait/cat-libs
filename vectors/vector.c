@@ -87,21 +87,21 @@ vec_data *_i_vector_add(void **vec_data) {
 }
 
 //vector remove is a function that takes in a vector postion and a vector then remove that postion in the vector
-vector_status _i_vector_remove(void **vec_data, uint64_t pos) {
+vector_status _i_vector_remove(void **vec_data, uint64_t pos, uint64_t length) {
     vector_t *vec = vector_get_struct(*vec_data); //get the vector struct 
 
-    if(pos >= vec->size) {
+    if(pos >= vec->size || pos + length > vec->size) {
         return VEC_OOB_ERR; //return error to the user 
     }
     
     //Move entries and reduce vector size to "remove an entry" shift entries above
     //pos along take up that place 
     memmove((void*)(((uint64_t)*vec_data) + (pos * vec->type_size)),
-	    (void*)(((uint64_t)*vec_data) + ((pos + 1) * vec->type_size)),
-	    (vec->size - pos - 1) * vec->type_size);
+	    (void*)(((uint64_t)*vec_data) + ((pos + length) * vec->type_size)),
+	    (vec->size - pos - length) * vec->type_size);
     
     //currently we don't free the memory yet opting to keep it so that if vector add is called reallocation is unneeded 
-    vec->size--;
+    vec->size -= length;
 
     return VEC_SUCCESS;
 }
@@ -123,8 +123,9 @@ int main(int argc, char **argv) {
 	printf("Allocation Error\n");
 	return 1;
     }
-    vector_remove(data, 1);
+    vector_remove(data, 0);
     vector_add(uint32_t, data, 2000);
+    vector_remove_multi(data, 0, 3);
     if(data != NULL) {
 	vector_free(data);
     }

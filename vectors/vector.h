@@ -30,7 +30,7 @@ bool vector_has_space(vector_t *vec);
 vector_t *vector_realloc(vector_t *vec);
 //Add value onto the end of the vector
 vec_data *_i_vector_add(void **vec_data);
-vector_status _i_vector_remove(void **vec_data, uint64_t pos);
+vector_status _i_vector_remove(void **vec_data, uint64_t pos, uint64_t length);
 
 //Make this less complex somehow/get the return value back into the hands of the user
 #define vector_add(type, vec, value) {\
@@ -43,5 +43,5 @@ vector_status _i_vector_remove(void **vec_data, uint64_t pos);
 
 #define vector_create(type) ((type *) _i_vector_create(sizeof(type)))
 
-#define vector_remove(vec, pos) _i_vector_remove((void**)&vec, pos)
-
+#define vector_remove(vec, pos) _i_vector_remove((void**)&vec, pos, 1)
+#define vector_remove_multi(vec, pos, len) _i_vector_remove((void**)&vec, pos, len) 
