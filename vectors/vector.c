@@ -1,9 +1,6 @@
-#include <stddef.h>
-#include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <memory.h>
 #include <string.h>
 #include "vector.h" 
 
